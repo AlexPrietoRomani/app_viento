@@ -1,18 +1,18 @@
 # Requerimientos Principales para la Aplicación de Pronóstico
 
 # Frameworks de la aplicación y datos
-streamlit
-pandas
+streamlit==1.47.0
+pandas==2.3.1
 numpy==1.26.4
 
 # Machine Learning y Modelo
 tensorflow==2.19.0
-joblib
-scikit-learn
+joblib==1.5.1
+scikit-learn==1.7.0
 
 # Visualización
-plotly
+plotly==6.2.0
 
 # Dependencias clave de TensorFlow
-h5py
+h5py==3.14.0
 protobuf==5.29.5
