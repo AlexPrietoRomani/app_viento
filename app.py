@@ -67,7 +67,7 @@ def load_artifacts(model_path, scaler_path, config_path):
                En caso de error, devuelve (None, None, None).
     """
     try:
-        model = tf.keras.models.load_model(model_path)
+        model = tf.keras.models.load_model(model_path, compile=False)
         scaler = joblib.load(scaler_path)
         with open(config_path, "r") as f:
             config = json.load(f)
