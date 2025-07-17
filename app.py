@@ -393,6 +393,9 @@ Date,hora,temperatura media,humedad,viento,lluvia
                             # --- Paso 5.5: Gráficos Duales de Viento y Temperatura ---
                             st.subheader("Visualización del Pronóstico y Ventanas de Aplicación")
 
+                            if not optimal_blocks:
+                                st.warning("⚠️ No se encontraron ventanas de aplicación óptimas para las próximas 24 horas según los criterios definidos.")
+    
                             # Gráfico de Viento
                             fig_viento = go.Figure()
                             fig_viento.add_trace(go.Scatter(x=results_df.index, y=results_df['Viento Límite Superior'], mode='lines', line=dict(width=0), showlegend=False))
@@ -406,9 +409,13 @@ Date,hora,temperatura media,humedad,viento,lluvia
                             fig_temp.add_hline(y=TEMP_MAX_OPTIMA, line_dash="dot", line_color="red", annotation_text=f"Límite Temp ({TEMP_MAX_OPTIMA}°C)", annotation_position="bottom right")
 
                             # Añadir los bloques de ventana óptima a AMBOS gráficos
-                            for start, end in optimal_blocks:
-                                fig_viento.add_vrect(x0=start, x1=end + pd.Timedelta(minutes=30), fillcolor="green", opacity=0.15, line_width=0, annotation_text="Óptimo", annotation_position="top left")
-                                fig_temp.add_vrect(x0=start, x1=end + pd.Timedelta(minutes=30), fillcolor="green", opacity=0.15, line_width=0, showlegend=False)
+                            if optimal_blocks:
+                                for start, end in optimal_blocks:
+                                    # Ajuste para que el rectángulo cubra todo el intervalo de 30 min
+                                    rect_start = start - pd.Timedelta(minutes=15)
+                                    rect_end = end + pd.Timedelta(minutes=15)
+                                    fig_viento.add_vrect(x0=rect_start, x1=rect_end, fillcolor="green", opacity=0.15, line_width=0, annotation_text="Óptimo", annotation_position="top left")
+                                    fig_temp.add_vrect(x0=rect_start, x1=rect_end, fillcolor="green", opacity=0.15, line_width=0, showlegend=False)
 
                             fig_viento.update_layout(title='Pronóstico de Viento', yaxis_title='Viento (km/h)', legend=dict(x=0.01, y=0.99, bgcolor='rgba(255,255,255,0.6)'))
                             fig_temp.update_layout(title='Pronóstico de Temperatura', yaxis_title='Temperatura (°C)', legend=dict(x=0.01, y=0.99, bgcolor='rgba(255,255,255,0.6)'))
