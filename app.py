@@ -7,6 +7,8 @@ import tensorflow as tf
 import joblib
 import json
 import plotly.graph_objects as go
+import os
+import random
 
 # ===================================================================
 # Configuración de la Página y Título
@@ -236,6 +238,19 @@ def iterative_mc_dropout_forecast(
     upper_bound = np.percentile(forecasts_descaled, 97.5, axis=0)
     
     return mean_forecast, lower_bound, upper_bound
+
+# ===================================================================
+# FIJAR SEMILLAS PARA REPRODUCIBILIDAD
+# ===================================================================
+# Esto es crucial para que los resultados de Monte Carlo Dropout sean
+# consistentes entre diferentes ejecuciones y entornos (CPU vs. GPU).
+SEED = 42
+os.environ['PYTHONHASHSEED'] = str(SEED)
+random.seed(SEED)
+np.random.seed(SEED)
+tf.random.set_seed(SEED)
+# Opcional: para una reproducibilidad aún más estricta en GPU
+# os.environ['TF_DETERMINISTIC_OPS'] = '1
 
 # ==============================================================================
 # SECCIÓN 2: CARGA INICIAL Y CONFIGURACIÓN DE LA APLICACIÓN
