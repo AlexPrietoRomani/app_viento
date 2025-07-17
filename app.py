@@ -44,47 +44,6 @@ with st.sidebar:
 st.title("🌬️ Pronóstico Diario de Viento con Análisis de Incertidumbre")
 st.markdown("---")
 
-# Layout en columnas para la introducción y las instrucciones
-col1, col2 = st.columns((2, 1.5), gap="large")
-
-with col1:
-    st.subheader("Bienvenido a la Herramienta de Pronóstico Inteligente")
-    st.markdown(
-        """
-        Obtenga una predicción detallada de la velocidad del viento para el día siguiente,
-        generada por un modelo de series temporales avanzado (LSTM). Nuestra herramienta no solo
-        le dice qué esperar, sino también **qué tan confiable es el pronóstico**, mostrándole
-        los posibles rangos de variación.
-        """
-    )
-    st.markdown("#### ¿Cómo Empezar? Siga estos 3 sencillos pasos:")
-    st.markdown(
-        """
-        1.  **Prepare su Archivo**: Asegúrese de tener un archivo CSV con sus datos meteorológicos históricos.
-        2.  **Cárguelo Abajo**: Use el cargador de archivos para subir su historial.
-        3.  **Genere el Pronóstico**: Haga clic en el botón para visualizar la predicción de 24 horas.
-        """
-    )
-
-with col2:
-    st.subheader("Formato del Archivo Requerido")
-    st.info(f"El archivo CSV debe contener al menos **{96} registros** (48 horas) de datos.")
-    
-    # Usar un expander para no saturar la vista principal
-    with st.expander("Ver ejemplo del formato de columnas"):
-        st.code(
-            """
-# Ejemplo de las primeras filas de su archivo .csv
-Date,hora,temperatura media,humedad,viento,lluvia
-2024-01-01,00:30:00,21.8,81,4.8,0.0
-2024-01-01,01:00:00,21.7,81,4.8,0.0
-2024-01-01,01:30:00,21.4,82,4.8,0.0
-...
-            """,
-            language="csv"
-        )
-st.markdown("---")
-
 # ===================================================================
 # Funciones Auxiliares (Carga, Preprocesamiento, Predicción)
 # ===================================================================
@@ -275,6 +234,51 @@ if model is not None:
     # ==============================================================================
     st.header("Paso Único: Cargar Archivo de Datos Históricos")
     st.markdown(f"Sube un archivo CSV con al menos los últimos **{LOOKBACK//2} horas ({LOOKBACK} registros)** de datos.")
+    
+    # --- Layout en columnas para la introducción y las instrucciones ---
+    col1, col2 = st.columns((2, 1.5), gap="large")
+
+    with col1:
+        st.subheader("Bienvenido a la Herramienta de Pronóstico Inteligente")
+        st.markdown(
+        """
+        Obtenga una predicción detallada de la velocidad del viento para el día siguiente,
+        generada por un modelo de series temporales avanzado (LSTM). Nuestra herramienta no solo
+        le dice qué esperar, sino también **qué tan confiable es el pronóstico**, mostrándole
+        los posibles rangos de variación.
+        """
+        )
+        st.markdown("#### ¿Cómo Empezar? Siga estos 3 sencillos pasos:")
+        st.markdown(
+            """
+            1.  **Prepare su Archivo**: Asegúrese de tener un archivo CSV con sus datos meteorológicos históricos.
+            2.  **Cárguelo Abajo**: Use el cargador de archivos para subir su historial.
+            3.  **Genere el Pronóstico**: Haga clic en el botón para visualizar la predicción de 24 horas.
+            """
+        )
+
+    with col2:
+        st.subheader("Formato del Archivo Requerido")
+        # Usar la variable LOOKBACK cargada para que sea consistente
+        st.info(f"El archivo CSV debe contener al menos **{LOOKBACK} registros** ({LOOKBACK//2} horas) de datos.")
+        
+        with st.expander("Ver ejemplo del formato de columnas"):
+            st.code(
+            """
+# Ejemplo de las primeras filas de su archivo .csv
+Date,hora,temperatura media,humedad,viento,lluvia
+2024-01-01,00:30:00,21.8,81,4.8,0.0
+2024-01-01,01:00:00,21.7,81,4.8,0.0
+2024-01-01,01:30:00,21.4,82,4.8,0.0
+...
+            """,
+                language="csv"
+            )
+            
+    st.markdown("---")
+    
+    # --- Widget para la carga de archivos ---
+    st.header("Paso Único: Cargar Archivo de Datos Históricos")
     
     # Widget para la carga de archivos. El usuario interactúa aquí.
     uploaded_hist_file = st.file_uploader("Historial Meteorológico (CSV)", type="csv")
