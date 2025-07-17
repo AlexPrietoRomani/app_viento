@@ -3,10 +3,10 @@
 # Frameworks de la aplicación y datos
 streamlit
 pandas
-numpy==1.23.5
+numpy
 
 # Machine Learning y Modelo
-tensorflow==2.10.1
+tensorflow
 joblib
 scikit-learn
 
@@ -15,4 +15,4 @@ plotly
 
 # Dependencias clave de TensorFlow
 h5py
-protobuf==3.19.6
+protobuf
