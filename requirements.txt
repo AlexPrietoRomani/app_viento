@@ -3,7 +3,7 @@
 # Frameworks de la aplicación y datos
 streamlit
 pandas
-numpy
+numpy==1.23.5
 
 # Machine Learning y Modelo
 tensorflow==2.10.1
