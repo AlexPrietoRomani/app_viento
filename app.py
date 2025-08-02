@@ -267,9 +267,9 @@ tf.random.set_seed(SEED)
 # Se cargan los artefactos del modelo una sola vez al iniciar la aplicación
 # gracias al decorador @st.cache_resource en la función load_artifacts.
 model, scaler, config = load_artifacts(
-    "modelo_viento_completo.keras", 
-    "scaler_viento.joblib",
-    "model_config.json"
+    "Modelos/modelo_viento_completo.keras", 
+    "Modelos/scaler_viento.joblib",
+    "Modelos/model_config.json"
 )
 
 # El código principal de la aplicación solo se ejecuta si la carga de artefactos fue exitosa.
