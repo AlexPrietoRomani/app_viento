@@ -388,14 +388,14 @@ Date,hora,temperatura media,humedad,viento,lluvia
 
                             # --- Paso 4.4: Ejecución del Pronóstico ---
                             # Se llama a la función principal que contiene la lógica de predicción iterativa.
-                            #mean_fc, lower_fc, upper_fc = iterative_mc_dropout_forecast(
-                            #    initial_sequence_scaled, future_exog_scaled, model, scaler, FEATURES, steps=48, mc_iterations=50
-                            #)
+                            mean_fc, lower_fc, upper_fc = iterative_mc_dropout_forecast(
+                                initial_sequence_scaled, future_exog_scaled, model, scaler, FEATURES, steps=48, mc_iterations=50
+                            )
                             
                             # Llamamos a la nueva función sin predicción iterativa
-                            mean_fc = iterative_deterministic_forecast(
-                                initial_sequence_scaled, future_exog_scaled, model, scaler, FEATURES, steps=48
-                            )
+                            #mean_fc = iterative_deterministic_forecast(
+                            #    initial_sequence_scaled, future_exog_scaled, model, scaler, FEATURES, steps=48
+                            #)
                             
                             # ==============================================================================
                             # SECCIÓN 5: ANÁLISIS Y VISUALIZACIÓN DE RESULTADOS
@@ -404,8 +404,8 @@ Date,hora,temperatura media,humedad,viento,lluvia
                             # --- Paso 5.1: Consolidar Resultados en un DataFrame ---
                             results_df = pd.DataFrame({
                                 'Pronóstico Viento': mean_fc,
-                            #    'Viento Límite Inferior': lower_fc,
-                            #    'Viento Límite Superior': upper_fc,
+                                'Viento Límite Inferior': lower_fc,
+                                'Viento Límite Superior': upper_fc,
                                 'Temperatura Estimada': future_processed['temperatura media'].values
                             }, index=future_processed.index)
 
@@ -414,8 +414,8 @@ Date,hora,temperatura media,humedad,viento,lluvia
                             TEMP_MAX_OPTIMA = 30.0
                             
                             # Versión con limites de viento y temperatura
-                            #results_df['Condición Óptima'] = (results_df['Viento Límite Superior'] < VIENTO_MAX_OPTIMO) & \
-                            #                            (results_df['Temperatura Estimada'] < TEMP_MAX_OPTIMA)
+                            results_df['Condición Óptima'] = (results_df['Viento Límite Superior'] < VIENTO_MAX_OPTIMO) & \
+                                                        (results_df['Temperatura Estimada'] < TEMP_MAX_OPTIMA)
 
                             # Versión sin limites de viento y temperatura
                             results_df['Condición Óptima'] = (results_df['Pronóstico Viento'] < VIENTO_MAX_OPTIMO) & \
@@ -432,8 +432,8 @@ Date,hora,temperatura media,humedad,viento,lluvia
                             horas_optimas = results_df['Condición Óptima'].sum() * 0.5
                             col2.metric(label="✅ Horas Óptimas para Aplicación", value=f"{horas_optimas:.1f} horas", help=f"Viento < {VIENTO_MAX_OPTIMO} km/h y Temp < {TEMP_MAX_OPTIMA}°C.")
                             
-                            #avg_interval_width = (results_df['Viento Límite Superior'] - results_df['Viento Límite Inferior']).mean()
-                            #col3.metric(label="📊 Fiabilidad del Pronóstico", value=f"{avg_interval_width:.2f} km/h", help="Amplitud promedio del intervalo de confianza del viento.")
+                            avg_interval_width = (results_df['Viento Límite Superior'] - results_df['Viento Límite Inferior']).mean()
+                            col3.metric(label="📊 Fiabilidad del Pronóstico", value=f"{avg_interval_width:.2f} km/h", help="Amplitud promedio del intervalo de confianza del viento.")
 
                             # --- Paso 5.4: Lógica para Agrupar Ventanas Contiguas ---
                             def get_optimal_blocks(condition_series):
@@ -465,8 +465,8 @@ Date,hora,temperatura media,humedad,viento,lluvia
                             fig_viento = go.Figure()
                             
                             # Añadir la línea de limite de viento superior e inferior
-                            #fig_viento.add_trace(go.Scatter(x=results_df.index, y=results_df['Viento Límite Superior'], mode='lines', line=dict(width=0), showlegend=False))
-                            #fig_viento.add_trace(go.Scatter(x=results_df.index, y=results_df['Viento Límite Inferior'], mode='lines', line=dict(width=0), fill='tonexty', fillcolor='rgba(255, 165, 0, 0.2)', name='Incertidumbre (95%)'))
+                            fig_viento.add_trace(go.Scatter(x=results_df.index, y=results_df['Viento Límite Superior'], mode='lines', line=dict(width=0), showlegend=False))
+                            fig_viento.add_trace(go.Scatter(x=results_df.index, y=results_df['Viento Límite Inferior'], mode='lines', line=dict(width=0), fill='tonexty', fillcolor='rgba(255, 165, 0, 0.2)', name='Incertidumbre (95%)'))
                             
                             # Añadir la línea de pronóstico de viento
                             fig_viento.add_trace(go.Scatter(x=results_df.index, y=results_df['Pronóstico Viento'], mode='lines+markers', line=dict(color='orangered', width=3), name='Pronóstico Viento'))
